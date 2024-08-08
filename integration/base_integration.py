@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 
 from aiohttp import ClientSession
 
-from VolatilityTask.serializers import IntegrationVolatilityMetric
+from VolatilityTask.metrics.serializers import IntegrationVolatilityMetric
 
 logger = logging.getLogger("asyncio")
 
@@ -47,7 +47,7 @@ class BaseIntegrationClient(ABC):
                 return stocks
 
 
-class StockMarketIntegration(ABC):
+class BaseStockMarketIntegration(ABC):
     @property
     @abstractmethod
     def high_price_index(self) -> int:

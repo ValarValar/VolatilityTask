@@ -3,10 +3,10 @@ import logging
 from typing import Optional, Tuple
 from decimal import Decimal
 
-from VolatilityTask.base_volatility_integration import BaseIntegrationClient, StockMarketIntegration
+from VolatilityTask.integration.base_integration import BaseIntegrationClient, BaseStockMarketIntegration
 from VolatilityTask.consts import BINANCE_INTERVAL_MAPPING, BASE_INTERVAL_HOUR
-from VolatilityTask.metrics_math import calculate_volatility
-from VolatilityTask.serializers import IntegrationVolatilityMetric
+from VolatilityTask.metrics.math import calculate_volatility
+from VolatilityTask.metrics.serializers import IntegrationVolatilityMetric
 
 logger = logging.getLogger("asyncio")
 
@@ -27,7 +27,7 @@ class BinanceIntegrationClient(BaseIntegrationClient):
         return {'symbol': symbol_pair, 'interval': interval}
 
 
-class BinanceStockMarketIntegration(StockMarketIntegration):
+class BinanceBaseStockMarketIntegration(BaseStockMarketIntegration):
     high_price_index: int = 2
     low_price_index: int = 3
 
@@ -51,12 +51,11 @@ class BinanceStockMarketIntegration(StockMarketIntegration):
         if not pair_datas:
             return IntegrationVolatilityMetric(symbol_pair, Decimal(0))
 
-        max_high_price = Decimal(pair_datas[0][self.high_price_index])
-        min_low_price = Decimal(pair_datas[0][self.low_price_index])
+        high_prices = [Decimal(pair_data[self.high_price_index]) for pair_data in pair_datas]
+        low_prices = [Decimal(pair_data[self.low_price_index]) for pair_data in pair_datas]
+        max_high_price = max(high_prices)
+        min_low_price = min(low_prices)
 
-        for pair_data in pair_datas:
-            max_high_price = max(max_high_price, Decimal(pair_data[self.high_price_index]))
-            min_low_price = min(min_low_price, Decimal(pair_data[self.low_price_index]))
         volatility = await calculate_volatility(max_high_price, min_low_price)
         return IntegrationVolatilityMetric(symbol_pair, volatility)
 
