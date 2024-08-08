@@ -3,8 +3,6 @@ import logging
 from typing import Optional, Tuple
 from decimal import Decimal
 
-from aiohttp import ClientSession
-
 from VolatilityTask.base_volatility_integration import BaseIntegrationClient, StockMarketIntegration
 from VolatilityTask.consts import BINANCE_INTERVAL_MAPPING, BASE_INTERVAL_HOUR
 from VolatilityTask.metrics_math import calculate_volatility
@@ -27,18 +25,6 @@ class BinanceIntegrationClient(BaseIntegrationClient):
             logger.error(f'Provided to {self.name} invalid params')
             return {}
         return {'symbol': symbol_pair, 'interval': interval}
-
-    async def get_pair_data(self, **kwargs) -> list[Optional[list]]:
-        params = await self._prepare_params(**kwargs)
-
-        async with ClientSession() as session:
-            async with session.get(url=self.stock_base_url, params=params) as response:
-                stocks = await response.json()
-                if not response.status == 200:
-                    logger.error(f'{self.name} get pair data error: {stocks["msg"]} {params["symbol"]}')
-                    return []
-                stocks = await response.json()
-                return stocks
 
 
 class BinanceStockMarketIntegration(StockMarketIntegration):
