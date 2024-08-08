@@ -1,6 +1,10 @@
 # VolatilityTask
 ## Requirements:
 pip install aiohttp
+## Main File To Run:
+metrics_collector.py
+## Potential Optimization:
+Collect all data in async way, then process json data with threads. Requires future investigation. But for this exact task runtime is too small(<1s), so threads overhead costs might even make it worse.    
 ## Task Specification
 Calculate volatility for last 1 hour for few symbols:
 * BTCUSDT
@@ -8,8 +12,8 @@ Calculate volatility for last 1 hour for few symbols:
 * LTCBTC
 * ABOBABTC
 * DGBBTC
-* DOGEBTC
-Formula:
+* DOGEBTC    
+## Formula:
 __volatility = (max_high - min_low) / min_low * 100__
 ### Data source:
 https://api.binance.com/api/v3/klines
