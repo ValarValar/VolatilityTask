@@ -1,17 +1,16 @@
 # VolatilityTask
+## Requirements:
+pip install aiohttp
 ## Task Specification
 Calculate volatility for last 1 hour for few symbols:
-
 * BTCUSDT
 * ETHBTC
 * LTCBTC
 * ABOBABTC
 * DGBBTC
 * DOGEBTC
-
 Formula:
 __volatility = (max_high - min_low) / min_low * 100__
-
 ### Data source:
 https://api.binance.com/api/v3/klines
 ### Docs for method:
